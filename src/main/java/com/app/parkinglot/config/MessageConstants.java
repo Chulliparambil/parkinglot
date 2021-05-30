@@ -3,7 +3,7 @@ package com.app.parkinglot.config;
 import lombok.experimental.UtilityClass;
 
 /**
- * Error constants for file
+ * Message constants for file
  */
 @UtilityClass
 public class MessageConstants {

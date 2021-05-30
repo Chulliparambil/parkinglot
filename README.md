@@ -16,9 +16,11 @@ Open command-line/terminal and Clone the repository on your local machine
 Go to the project directory and open command-line/terminal and execute steps as below:
 
 ##### Build the application without test-cases
-``` mvn clean install```
+``` mvn clean install -DskipTests```
 ##### Run the application
 ``` mvn spring-boot:run```
+##### Run test
+``` mvn test```
 
 Provide the input file path when prompted on the terminal, and you will be able to see the ouput
  once file is processed.
