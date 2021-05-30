@@ -105,17 +105,15 @@ public class ParkingServiceImpl implements ParkingService {
     private void getRegistrationNumbersForDriverOfAge(List<ParkedVehicle> parkedVehicleList,
                                                       String[] commandArray) {
         int vehiclesFound = 0;
-        String registrationNumbers = "";
+        StringBuilder registrationNumbers = new StringBuilder();
         for (ParkedVehicle parkedVehicle : parkedVehicleList) {
             if (parkedVehicle.getAge() == Integer.parseInt(commandArray[1])) {
                 vehiclesFound++;
-                registrationNumbers +=
-                        parkedVehicle.getRegistrationNumber().concat(",");
+                registrationNumbers.append(parkedVehicle.getRegistrationNumber()).append(",");
             }
         }
         if (vehiclesFound > 0) {
-            System.out.println(registrationNumbers.substring(0,
-                    registrationNumbers.length() - 1));
+            System.out.println(registrationNumbers.substring(0, registrationNumbers.length() - 1));
         } else {
             System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
@@ -130,16 +128,15 @@ public class ParkingServiceImpl implements ParkingService {
     private void getSlotsForDriversOfAge(List<ParkedVehicle> parkedVehicleList,
                                          String[] commandArray) {
         int vehiclesFound = 0;
-        String slots = "";
+        StringBuilder slots = new StringBuilder();
         for (ParkedVehicle parkedVehicle : parkedVehicleList) {
             if (parkedVehicle.getAge() == Integer.parseInt(commandArray[1])) {
                 vehiclesFound++;
-                slots += parkedVehicle.getParkingSlot() + ",";
+                slots.append(parkedVehicle.getParkingSlot()).append(",");
             }
         }
         if (vehiclesFound > 0) {
-            System.out.println(slots.substring(0,
-                    slots.length() - 1));
+            System.out.println(slots.substring(0, slots.length() - 1));
         } else {
             System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
