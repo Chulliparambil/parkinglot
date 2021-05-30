@@ -46,8 +46,7 @@ public class ParkingLot {
                 lotNumber = i + 1;
                 parkingSlots[i] = 1;
                 break;
-            } else
-                continue;
+            }
         }
         return lotNumber;
     }
