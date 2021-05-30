@@ -1,6 +1,7 @@
 package com.app.parkinglot.service;
 
 import com.app.parkinglot.config.Commands;
+import com.app.parkinglot.config.MessageConstants;
 import com.app.parkinglot.model.ParkedVehicle;
 import com.app.parkinglot.model.ParkingLot;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ParkingServiceImpl implements ParkingService {
     public void processData(Path filePath) {
         try (Stream<String> commandInputs = Files.lines(filePath)) {
             commandInputs.forEach(command -> {
-                String commandArray[] = command.split(" ");
+                String[] commandArray = command.split(" ");
                 if (commandArray.length == 2) {
                     if (commandArray[0].equalsIgnoreCase(Commands.CREATE_PARKING_LOT)) {
                         if (null == parkingLot) {
@@ -40,7 +41,7 @@ public class ParkingServiceImpl implements ParkingService {
                         if (parkingLot.createParkingLots(Integer.parseInt(commandArray[1]))) {
                             System.out.println("Created parking of " + commandArray[1] + " slots");
                         } else {
-                            System.out.println("Parking lot already exists");
+                            System.out.println(MessageConstants.PARKING_LOT_EXISTS);
                         }
                     } else if (commandArray[0].equalsIgnoreCase(Commands.LEAVE)) {
                         leaveParking(parkingLot, parkedVehicleList, commandArray[1]);
@@ -51,17 +52,13 @@ public class ParkingServiceImpl implements ParkingService {
                     } else if (commandArray[0].equalsIgnoreCase(Commands.VEHICLE_REGISTRATION_NUMBER_FOR_DRIVER_OF_AGE)) {
                         getRegistrationNumbersForDriverOfAge(parkedVehicleList, commandArray);
                     }
-                } else if (commandArray.length == 4) {
-                    if (commandArray[0].equals(Commands.PARK)) {
-                        if (parkedVehicleList == null) {
-                            parkedVehicleList = new ArrayList<>();
-                        }
-                        parkVehicleInSlot(parkingLot, parkedVehicleList, commandArray);
-                    } else {
-                        System.out.println("Invalid Command");
+                } else if (commandArray.length == 4 && commandArray[0].equals(Commands.PARK)) {
+                    if (parkedVehicleList == null) {
+                        parkedVehicleList = new ArrayList<>();
                     }
+                    parkVehicleInSlot(parkingLot, parkedVehicleList, commandArray);
                 } else {
-                    System.out.println("Invalid Command");
+                    System.out.println(MessageConstants.INVALID_COMMAND);
                 }
             });
         } catch (IOException e) {
@@ -70,7 +67,8 @@ public class ParkingServiceImpl implements ParkingService {
     }
 
     /**
-     *  Parks vehicle in slot if available
+     * Parks vehicle in slot if available
+     *
      * @param parkingLot
      * @param parkedVehicleList
      * @param commandArray
@@ -81,7 +79,7 @@ public class ParkingServiceImpl implements ParkingService {
         if (commandArray[2].equals(Commands.DRIVER_AGE)) {
             int lotNo = parkingLot.allotParkingSlot();
             if (lotNo == 0) {
-                System.out.println("No parking slot available");
+                System.out.println(MessageConstants.PARKING_NOT_AVAILABLE);
                 return;
             }
             ParkedVehicle parkedVehicle = new ParkedVehicle();
@@ -94,12 +92,13 @@ public class ParkingServiceImpl implements ParkingService {
                     "parked at " +
                     "slot number " + parkedVehicle.getParkingSlot());
         } else {
-            System.out.println("Invalid Command");
+            System.out.println(MessageConstants.INVALID_COMMAND);
         }
     }
 
     /**
      * Get registration number of cars for given driver age
+     *
      * @param parkedVehicleList
      * @param commandArray
      */
@@ -118,12 +117,13 @@ public class ParkingServiceImpl implements ParkingService {
             System.out.println(registrationNumbers.substring(0,
                     registrationNumbers.length() - 1));
         } else {
-            System.out.println("No parked car matches the query");
+            System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
     }
 
     /**
      * Get slots for driver of given age
+     *
      * @param parkedVehicleList
      * @param commandArray
      */
@@ -141,12 +141,13 @@ public class ParkingServiceImpl implements ParkingService {
             System.out.println(slots.substring(0,
                     slots.length() - 1));
         } else {
-            System.out.println("No parked car matches the query");
+            System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
     }
 
     /**
      * Get slot for registered vehicle number
+     *
      * @param parkedVehicleList
      * @param commandArray
      */
@@ -161,20 +162,21 @@ public class ParkingServiceImpl implements ParkingService {
             }
         }
         if (!vehicleFound) {
-            System.out.println("No parked car matches the query");
+            System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
     }
 
     /**
      * Leave parking slot
+     *
      * @param parkingLot
      * @param parkedVehicleList
      * @param slotNumber
      */
     private void leaveParking(ParkingLot parkingLot, List<ParkedVehicle> parkedVehicleList
             , String slotNumber) {
-        if (false == parkingLot.leaveParkingLot(Integer.parseInt(slotNumber))) {
-            System.out.println("No parked car matches the query");
+        if (!parkingLot.leaveParkingLot(Integer.parseInt(slotNumber))) {
+            System.out.println(MessageConstants.NO_PARKED_CAR_MATCHES_THE_QUERY);
         }
         Predicate<ParkedVehicle> isParked =
                 item -> item.getParkingSlot() == Integer.parseInt(slotNumber);
